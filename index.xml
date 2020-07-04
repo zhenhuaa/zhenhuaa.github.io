@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pacman&#39;s Blog</title>
+    <link>http://example.org/</link>
+    <description>Recent content on Pacman&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>c</language>
+    <copyright>© Copyright notice</copyright>
+    <lastBuildDate>Sat, 04 Jul 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Swagger简易指南</title>
+      <link>http://example.org/posts/swagger-intro/</link>
+      <pubDate>Sat, 04 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/posts/swagger-intro/</guid>
+      <description>背景介绍 Web开发过程中， 文档的交付是非常重要的一环， 其中接口文档定义了前后端合作的边界，一个清晰简洁的文档能极大地提高双方合作的效率。 社区发展过程中，涌现了非常多的方案， 其中OpenAPI/Swagger是目前生态最为成熟的方案
+Swagger 简介 OpenAPI是一种用于描述REST API的规范格式， 一个完善的OpanAPI定义文件可以完整的表述出接口的路径， 请求参数，返回类型等信息
+Swagger是指一套围绕OpenAPI规范构建的工具集， 其中比较常用的有
+ Swagger Editor 可以编写OpenAPI规范的在线编辑器 Swagger UI 基于OpenAPI规范自动生成的可交互的接口文档  开始动手吧 从例子出发 开始编写swagger文档前，我们需要了解OpenAPI规范,为了表示api设计的方方面面，规范描述了诸多细节，为了快速开始，让我们从一个简单的例子入手，比如设计一个朋友圈的列表接口，用OpenAPI可描述如下
+openapi: 3.0.2 info: title: 朋友圈接口 description: 朋友圈接口，提供发表动态，评论，**点赞**等服务 version: &amp;#34;1.0&amp;#34; servers: - description: local-dev url: &amp;#34;http://local.dev.com:4001/md&amp;#34; - description: production url: &amp;#34;https://production.com/md&amp;#34; tags: - name: &amp;#34;moment&amp;#34; description: 动态相关 paths: /moments/list: get: tags: [&amp;#34;moment&amp;#34;] summary: Get Moment List parameters: - $ref: &amp;#34;#/components/parameters/roleid&amp;#34; responses: 200: description: ok content: application/json: schema: type: array items: $ref: &amp;#34;#/components/schemas/Moment&amp;#34; components: parameters: roleid: name: roleid in: query description: 角色id schema: type: number example: 24017600001 schemas: Moment: type: object properties: id: type: integer example: 1 text: type: string example: &amp;#34;share moment&amp;#34; roleid: type: integer example: 24017600001 createTime: type: integer example: 1593847438392 粘贴至到上文提到的Swagger Editor, 我们就可以在右侧得到如下图一样的交互文档</description>
+    </item>
+    
+  </channel>
+</rss>

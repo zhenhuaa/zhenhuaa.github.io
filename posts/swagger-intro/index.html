@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Swagger简易指南 - Pacman&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	
+<meta itemprop="name" content="Swagger简易指南">
+<meta itemprop="description" content="介绍Swagger以及OpenAPI简易教程">
+
+
+<meta itemprop="datePublished" content="2020-07-04T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-07-04T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="199">
+
+
+
+<meta itemprop="keywords" content="OpenAPI," />
+<meta property="og:title" content="Swagger简易指南" />
+<meta property="og:description" content="介绍Swagger以及OpenAPI简易教程" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/swagger-intro/" />
+<meta property="article:published_time" content="2020-07-04T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2020-07-04T00:00:00&#43;00:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Swagger简易指南"/>
+<meta name="twitter:description" content="介绍Swagger以及OpenAPI简易教程"/>
+<link href='https://fonts.googleapis.com/css?family=Playfair+Display:700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" media="screen" href="http://example.org/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="http://example.org/css/main.css" />
+
+        <link id="dark-scheme" rel="stylesheet" type="text/css" href="http://example.org/css/dark.css" />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+		<script src="http://example.org/js/main.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper">
+		<div class="header">
+	
+		<div class="avatar">
+			<a href="http://example.org/">
+				<img src="https://avatars0.githubusercontent.com/u/9764547?s=460&amp;u=2ad547d3f8c043586d2b6de2044868ae174fe575&amp;v=4" alt="Pacman&#39;s Blog" />
+			</a>
+		</div>
+	
+	<h1 class="site-title"><a href="http://example.org/">Pacman&#39;s Blog</a></h1>
+	<div class="site-description"><p>A Web Developer</p><nav class="nav social">
+			<ul class="flat"><li><a href="https://github.com/zhenhuaa" title="Github"><i data-feather="github"></i></a></li><li><a href="/index.xml" title="RSS"><i data-feather="rss"></i></a></li></ul>
+		</nav><span class="scheme-toggle"><a href="#" id="scheme-toggle"></a></div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post">
+			<div class="post-header">
+				
+					<div class="meta">
+						<div class="date">
+							<span class="day">04</span>
+							<span class="rest">Jul 2020</span>
+						</div>
+					</div>
+				
+				<div class="matter">
+					<h1 class="title">Swagger简易指南</h1>
+				</div>
+			</div>
+					
+			<div class="markdown">
+				
+
+<h2 id="背景介绍">背景介绍</h2>
+
+<p>Web开发过程中， 文档的交付是非常重要的一环， 其中接口文档定义了前后端合作的边界，一个清晰简洁的文档能极大地提高双方合作的效率。 社区发展过程中，涌现了非常多的方案， 其中OpenAPI/Swagger是目前生态最为成熟的方案</p>
+
+<h2 id="swagger-简介">Swagger 简介</h2>
+
+<p>OpenAPI是一种用于描述REST API的规范格式， 一个完善的OpanAPI定义文件可以完整的表述出接口的路径， 请求参数，返回类型等信息</p>
+
+<p>Swagger是指一套围绕OpenAPI规范构建的工具集， 其中比较常用的有</p>
+
+<ul>
+<li><a href="https://editor.swagger.io/">Swagger Editor</a> 可以编写OpenAPI规范的<strong>在线编辑器</strong></li>
+<li><a href="https://swagger.io/tools/swagger-ui/">Swagger UI</a> 基于OpenAPI规范自动生成的<strong>可交互的接口文档</strong></li>
+</ul>
+
+<h2 id="开始动手吧">开始动手吧</h2>
+
+<h3 id="从例子出发">从例子出发</h3>
+
+<p>开始编写swagger文档前，我们需要了解<a href="https://swagger.io/specification/">OpenAPI规范</a>,为了表示api设计的方方面面，规范描述了诸多细节，为了快速开始，让我们从一个简单的例子入手，比如设计一个朋友圈的列表接口，用OpenAPI可描述如下</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">openapi: 3.0.2
+info:
+  title: 朋友圈接口
+  description: 朋友圈接口，提供发表动态，评论，<span style="color:#00f">**点赞**等服务</span>
+  version: <span style="color:#a31515">&#34;1.0&#34;</span>
+
+servers:
+  - description: local-dev
+    url: <span style="color:#a31515">&#34;http://local.dev.com:4001/md&#34;</span>
+  - description: production
+    url: <span style="color:#a31515">&#34;https://production.com/md&#34;</span>
+    
+tags:
+  - name: <span style="color:#a31515">&#34;moment&#34;</span>
+    description: 动态相关 
+    
+paths:
+  /moments/list:
+    get:
+      tags: [<span style="color:#a31515">&#34;moment&#34;</span>]
+      summary: Get Moment List
+      parameters:
+        - $ref: <span style="color:#a31515">&#34;#/components/parameters/roleid&#34;</span>
+        
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: <span style="color:#a31515">&#34;#/components/schemas/Moment&#34;</span>
+              
+components:
+  parameters:
+    roleid:
+      name: roleid
+      in: query
+      description: 角色id
+      schema:
+        type: number
+        example: 24017600001
+        
+  schemas:
+    Moment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        text:
+          type: string
+          example: <span style="color:#a31515">&#34;share moment&#34;</span>
+        roleid:
+          type: integer
+          example: 24017600001
+        createTime:
+          type: integer
+          example: 1593847438392</code></pre></div>
+<p>粘贴至到上文提到的<a href="https://editor.swagger.io/">Swagger Editor</a>, 我们就可以在右侧得到如下图一样的交互文档</p>
+
+<p><img src="https://i.loli.net/2020/07/04/xg97ruvAipVCazt.png" alt="image.png" /></p>
+
+<h3 id="文档的层次结构">文档的层次结构</h3>
+
+<p>从上图的例子中，我们可以清晰的看出，文档大致分为6个不同的子单元</p>
+
+<ul>
+<li>openapi 版本声明  这关系到相关工具链对文档格式的解析</li>
+<li>info 声明该文档的一些基本信息，比如接口提供那些服务</li>
+<li>servers 用于声明不同环境下服务器的地址</li>
+<li>tags 用于给api提供分组， 可声明多个tag</li>
+<li>paths 最重要的部分，声明各个接口的具体规范</li>
+<li>components 可以复用的组件，主要包括请求的参数和返回定义的model</li>
+</ul>
+
+<blockquote>
+<p>components配合ref是一个很棒的设计，在一个业务的api中，不同接口往往需要共享参数列表和返回的model定义， 利用这个设计可以大幅度简化文档的冗余信息</p>
+</blockquote>
+
+<h3 id="最重要的path">最重要的PATH</h3>
+
+<p>Path单元下描述API具体结构，一个定义首先从路径出发， 如图中的moments/list, 路径下可以定义不同的HTTP方法， 使用不同的逻辑， 大致结构如下</p>
+
+<ul>
+<li>路径 (moments/list)
+
+<ul>
+<li>HTTP方法 (GET)
+
+<ul>
+<li>所属标签 (moment)</li>
+<li>接口描述 (Get Moment List)</li>
+<li>参数列表
+
+<ul>
+<li>直接定义</li>
+<li>引用组件的定义</li>
+</ul></li>
+<li>返回数据
+
+<ul>
+<li>返回码
+
+<ul>
+<li>返回格式
+
+<ul>
+<li>返回结构体schema</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+
+<p>关于参数定义， 上例中使用了query这个类型参数， 就是浏览器上的queryString
+规范也允许声明位于url路径上的参数(类型为path). 对于更复杂的情况，比如web业务中常见的提交复杂的表单， 这时候可以使用描述requestBody配合schema精确定义</p>
+
+<h3 id="swagger-ui">Swagger UI</h3>
+
+<p>Swagger UI提供了从符合OpenApi规范的定义文件生成一个<strong>交互文档</strong>的能力，区别与传统的静态文档，我们可以直接在Swagger上发送请求，获取返回的数据，非常的方便</p>
+
+<p><img src="https://i.loli.net/2020/07/04/6q5dzRCTU4Shiku.png" alt="image.png" /></p>
+
+<p>点击每个路径旁边的Try it out按钮，就可以在页面上看到请求返回的数据， 可交互的文档带来了一个巨大的协作优势， 在问题不确定是客户端请求不规范还是服务器返回有问题时，可以用swagger请求一次解决很多沟通问题</p>
+
+<h2 id="出色的生态">出色的生态</h2>
+
+<p>相对于其他方案，OpenAPI有着非常好的生态，以及相关工具链, 如下网站索引了一系列和OpenAPI相关联的项目</p>
+
+<p>[OpenAPITools] <a href="https://openapi.tools/">https://openapi.tools/</a></p>
+
+<p>比如以下场景</p>
+
+<ul>
+<li>datavalidator 根据规范自动生产校验参数的代码</li>
+<li>doc  文档类，除了swagger UI方案，社区也有非常多其他ui方案来选择</li>
+<li>mock server 根据接口定义的schema， 自动生产mock数据</li>
+<li>tool vscode插件，编写openApi做lint校验和自动补全， 文件支持导入Postman测试工具</li>
+<li>sass服务 一些saas服务的接口管理平台都支持OpenAPI格式的导入与管理</li>
+</ul>
+
+<h2 id="总结">总结</h2>
+
+<p>本文主要通过一个例子简单了介绍了openAPI规范的基础结构, 以及一些相关的生态, OpenAPI相对于其他方案，比较强大也略微复杂，初次引入可能带来一定的成本，但这种事情是短期内收益不高，长期收益明显的例子。笔者负责维护的项目中，已经把接口文档全部转移到该方案，相比于旧方案，swagger协作中明显更为顺畅。 清晰的文档对于交流协作非常重要， 与人方便，与己方便。</p>
+
+			</div>
+
+			<div class="tags">
+				
+					
+						<ul class="flat">
+							
+							<li><a href="/tags/openapi">OpenAPI</a></li>
+							
+						</ul>
+					
+				
+			</div><div id="disqus_thread"></div>
+<script type="text/javascript">
+	(function () {
+		
+		
+		if (window.location.hostname == "localhost")
+			return;
+
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		var disqus_shortname = 'ink-demo';
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the </a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div>2020  © Copyright notice |  <a href="https://github.com/knadh/hugo-ink">Ink</a> theme on <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-123-45', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<script>feather.replace()</script>
+</body>
+</html>
