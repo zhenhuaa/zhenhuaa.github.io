@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Openapi on Pacman&#39;s Blog</title>
-    <link>http://example.org/tags/openapi/</link>
+    <link>https://zhenhuaa.github.io/tags/openapi/</link>
     <description>Recent content in Openapi on Pacman&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>c</language>
+    <language>en-us</language>
     <copyright>© Copyright notice</copyright>
     <lastBuildDate>Sat, 04 Jul 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://example.org/tags/openapi/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://zhenhuaa.github.io/tags/openapi/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Swagger简易指南</title>
-      <link>http://example.org/posts/swagger-intro/</link>
+      <link>https://zhenhuaa.github.io/posts/swagger-intro/</link>
       <pubDate>Sat, 04 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/posts/swagger-intro/</guid>
+      <guid>https://zhenhuaa.github.io/posts/swagger-intro/</guid>
       <description>背景介绍 Web开发过程中， 文档的交付是非常重要的一环， 其中接口文档定义了前后端合作的边界，一个清晰简洁的文档能极大地提高双方合作的效率。 社区发展过程中，涌现了非常多的方案， 其中OpenAPI/Swagger是目前生态最为成熟的方案
 Swagger 简介 OpenAPI是一种用于描述REST API的规范格式， 一个完善的OpanAPI定义文件可以完整的表述出接口的路径， 请求参数，返回类型等信息
 Swagger是指一套围绕OpenAPI规范构建的工具集， 其中比较常用的有
