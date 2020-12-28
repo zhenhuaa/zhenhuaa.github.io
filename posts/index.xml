@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Pacman&#39;s Blog</title>
@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Copyright notice</copyright>
-    <lastBuildDate>Sat, 04 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 28 Dec 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://zhenhuaa.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>利用PEG.JS从SQL生成模型类型签名</title>
+      <link>https://zhenhuaa.github.io/posts/sql2ts/</link>
+      <pubDate>Mon, 28 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://zhenhuaa.github.io/posts/sql2ts/</guid>
+      <description>背景介绍 node后台项目从JS迁移到TS后，我们需要为项目中大量的model类手写类型签名, 比如对于如下profile表
+CREATE TABLE `profile` ( `roleId` bigint(20) NOT NULL COMMENT &amp;#39;playerId&amp;#39;, `location` varchar(50) DEFAULT NULL COMMENT &amp;#39;country-province-city&amp;#39;, `signature` varchar(100) DEFAULT NULL COMMENT &amp;#39;signature text&amp;#39;, `avatar` varchar(255) DEFAULT NULL COMMENT &amp;#39;user avatar url&amp;#39;, PRIMARY KEY (`RoleId`), ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=&amp;#39;user profile&amp;#39;; 需要声明ProfileRecord为如下类型, 本文介绍如何使用PEG.JS来解析SQL的建表语句来自动生成类型签名
+interface profile { roleId: number // playerId  location: string // country-province-city  signature: string // signature text  avatar: string // user avatar url } PEG.</description>
+    </item>
     
     <item>
       <title>Swagger简易指南</title>

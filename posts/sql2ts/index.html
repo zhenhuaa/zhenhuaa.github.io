@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>利用PEG.JS从SQL生成模型类型签名 - Pacman&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta itemprop="name" content="利用PEG.JS从SQL生成模型类型签名">
+<meta itemprop="description" content="介绍利用PEG.JS从SQL建表语句解析后生成类型签名的方法">
+<meta itemprop="datePublished" content="2020-12-28T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-12-28T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="342">
+
+
+
+<meta itemprop="keywords" content="PEG.JS," /><meta property="og:title" content="利用PEG.JS从SQL生成模型类型签名" />
+<meta property="og:description" content="介绍利用PEG.JS从SQL建表语句解析后生成类型签名的方法" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://zhenhuaa.github.io/posts/sql2ts/" />
+<meta property="article:published_time" content="2020-12-28T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-12-28T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="利用PEG.JS从SQL生成模型类型签名"/>
+<meta name="twitter:description" content="介绍利用PEG.JS从SQL建表语句解析后生成类型签名的方法"/>
+<link href='https://fonts.googleapis.com/css?family=Playfair+Display:700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" media="screen" href="https://zhenhuaa.github.io/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://zhenhuaa.github.io/css/main.css" />
+
+        <link id="dark-scheme" rel="stylesheet" type="text/css" href="https://zhenhuaa.github.io/css/dark.css" />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+		<script src="https://zhenhuaa.github.io/js/main.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper">
+		<div class="header">
+	
+		<div class="avatar">
+			<a href="https://zhenhuaa.github.io/">
+				<img src="https://avatars0.githubusercontent.com/u/9764547?s=460&amp;u=2ad547d3f8c043586d2b6de2044868ae174fe575&amp;v=4" alt="Pacman&#39;s Blog" />
+			</a>
+		</div>
+	
+	<h1 class="site-title"><a href="https://zhenhuaa.github.io/">Pacman&#39;s Blog</a></h1>
+	<div class="site-description"><p>A Web Developer</p><nav class="nav social">
+			<ul class="flat"><li><a href="https://github.com/zhenhuaa" title="Github"><i data-feather="github"></i></a></li><li><a href="/index.xml" title="RSS"><i data-feather="rss"></i></a></li></ul>
+		</nav><span class="scheme-toggle"><a href="#" id="scheme-toggle"></a></div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post">
+			<div class="post-header">
+				
+					<div class="meta">
+						<div class="date">
+							<span class="day">28</span>
+							<span class="rest">Dec 2020</span>
+						</div>
+					</div>
+				
+				<div class="matter">
+					<h1 class="title">利用PEG.JS从SQL生成模型类型签名</h1>
+				</div>
+			</div>
+					
+			<div class="markdown">
+				<h2 id="背景介绍">背景介绍</h2>
+<p>node后台项目从JS迁移到TS后，我们需要为项目中大量的model类手写类型签名, 比如对于如下profile表</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#00f">CREATE</span> <span style="color:#00f">TABLE</span> `profile` (
+  `roleId` bigint(20) <span style="color:#00f">NOT</span> <span style="color:#00f">NULL</span> <span style="color:#00f">COMMENT</span> <span style="color:#a31515">&#39;playerId&#39;</span>,
+  `<span style="color:#00f">location</span>` varchar(50) <span style="color:#00f">DEFAULT</span> <span style="color:#00f">NULL</span> <span style="color:#00f">COMMENT</span> <span style="color:#a31515">&#39;country-province-city&#39;</span>,
+  `signature` varchar(100) <span style="color:#00f">DEFAULT</span> <span style="color:#00f">NULL</span> <span style="color:#00f">COMMENT</span> <span style="color:#a31515">&#39;signature text&#39;</span>,
+  `avatar` varchar(255) <span style="color:#00f">DEFAULT</span> <span style="color:#00f">NULL</span> <span style="color:#00f">COMMENT</span> <span style="color:#a31515">&#39;user avatar url&#39;</span>,
+  <span style="color:#00f">PRIMARY</span> <span style="color:#00f">KEY</span> (`RoleId`),
+) ENGINE=InnoDB <span style="color:#00f">DEFAULT</span> CHARSET=utf8 <span style="color:#00f">COMMENT</span>=<span style="color:#a31515">&#39;user profile&#39;</span>;
+</code></pre></div><p>需要声明ProfileRecord为如下类型, 本文介绍如何使用PEG.JS来解析SQL的建表语句来自动生成类型签名</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#00f">interface</span> profile {
+  roleId: <span style="color:#2b91af">number</span> <span style="color:#008000">// playerId
+</span><span style="color:#008000"></span>  location: <span style="color:#2b91af">string</span> <span style="color:#008000">// country-province-city
+</span><span style="color:#008000"></span>  signature: <span style="color:#2b91af">string</span> <span style="color:#008000">// signature text
+</span><span style="color:#008000"></span>  avatar: <span style="color:#2b91af">string</span> <span style="color:#008000">// user avatar url
+</span><span style="color:#008000"></span>} 
+</code></pre></div><h3 id="pegjs-简介">PEG.JS 简介</h3>
+<p>PEG（英语：Parsing Expression Grammar），解析表达语法, 是一种分析型形式文法, PEG.JS 是利用PEG文法来标示语言规则自动帮我们生成parser的工具</p>
+<h3 id="从例子中学习">从例子中学习</h3>
+<p>打开网站PEG.JS<a href="https://pegjs.org/online">在线版本</a></p>
+<h4 id="识别简单算术表达式">识别简单算术表达式</h4>
+<p>下面这个例子可以识别类似 2*(3+4) 的简单的算术表达式, 并计算他们的值</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts">start         <span style="color:#008000">//语法标示的起点, 文本将从这个规则开始被解析
+</span><span style="color:#008000"></span>  = additive
+
+additive <span style="color:#008000">// 规则开头表面该规则的名字
+</span><span style="color:#008000"></span>  <span style="color:#008000">/* 
+</span><span style="color:#008000">  * left被规则名修饰匹配到的变量可用于后续方括号内的计算处理
+</span><span style="color:#008000">  */</span>
+  = left:<span style="color:#2b91af">multiplicative</span> <span style="color:#a31515">&#34;+&#34;</span> right:<span style="color:#2b91af">additive</span> { <span style="color:#00f">return</span> left + right; } 
+  / multiplicative   <span style="color:#008000">// 符号 / 代表或的关系
+</span><span style="color:#008000"></span>
+multiplicative
+  = left:<span style="color:#2b91af">primary</span> <span style="color:#a31515">&#34;*&#34;</span> right:<span style="color:#2b91af">multiplicative</span> { <span style="color:#00f">return</span> left * right; }
+  / primary
+
+primary
+  = integer
+  / <span style="color:#a31515">&#34;(&#34;</span> additive:<span style="color:#2b91af">additive</span> <span style="color:#a31515">&#34;)&#34;</span> { <span style="color:#00f">return</span> additive; }
+
+<span style="color:#008000">/** 
+</span><span style="color:#008000"> * 这里第二个&#34;integer&#34;字符串的用于生成的parser中输出更加友好的错误信息
+</span><span style="color:#008000"> */</span>
+integer <span style="color:#a31515">&#34;integer&#34;</span>  
+  = digits:[0-9]+ { <span style="color:#00f">return</span> parseInt(digits.join(<span style="color:#a31515">&#34;&#34;</span>), 10); } 
+</code></pre></div><p>让我们脑内模拟下此语法规则下 <code>2*(3+4)</code>解析和计算流程, 大致过程如下</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#008000">// 向下传播
+</span><span style="color:#008000"></span><span style="">↓</span> start =&gt; additive:[<span style="color:#a31515">&#39;2*(3+4)&#39;</span>]
+
+<span style="">↓</span> additive:[<span style="color:#a31515">&#39;2*(3+4)&#39;</span>] =&gt; multiplicative =&gt; left:[2] <span style="color:#a31515">&#39;*&#39;</span> right:[(3+4)] =&gt; 2 * right:[(3+4)]
+
+<span style="">↓</span> right:[(3+4)] =&gt; additive:[(3+4)] =&gt; <span style="color:#a31515">&#34;(&#34;</span> additive:[3+4] <span style="color:#a31515">&#34;)&#34;</span> =&gt; additive:[3+4]
+
+<span style="">↓</span> additive:[3+4] =&gt; left:[3] <span style="color:#a31515">&#34;+&#34;</span> right:[4] =&gt; 3+4 =&gt; 7
+
+<span style="color:#008000">// 向上传播
+</span><span style="color:#008000"></span><span style="">↑</span> 7 =&gt; additive:[3+4]
+
+<span style="">↑</span> 7 =&gt; additive:[3+4] =&gt; right:[(3+4)] 
+
+<span style="">↑</span> 2 * right:[(3+4)] =&gt; 2 * 7 =&gt; 14 =&gt; additive:[<span style="color:#a31515">&#39;2*(3+4)&#39;</span>] 
+
+<span style="">↑</span> 14 =&gt; additive:[<span style="color:#a31515">&#39;2*(3+4)&#39;</span>] =&gt; start
+</code></pre></div><h4 id="sql-ddl的结构">SQL DDL的结构</h4>
+<p>大致上，建表语句的声明大致为三部分，</p>
+<ul>
+<li>数据表本身相关声明 (表名， 所用字符集，备用注释等)</li>
+<li>表中列的相关声明 (列明，使用类型，相关注释等)</li>
+<li>需要建立的索引(索引名字, 索引类型)</li>
+</ul>
+<p>对于我们的目标来说, 生成ts声明, 需要关注的只有表名，列名，列的类型, 由此思路，我们可以构造简单的如下PEGJS语法规则来制导</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts">start=Sqls EOF
+
+Sqls = (TableDef / CommentLine / NoCreateStat) +
+
+TableDef
+  = _ <span style="color:#a31515">&#34;CREATE&#34;</span>i _ <span style="color:#a31515">&#34;TABLE&#34;</span>i _ tbName:<span style="color:#2b91af">field</span> _ <span style="color:#a31515">&#34;(&#34;</span> cols:<span style="color:#2b91af">ColsDef</span> keys:<span style="color:#2b91af">KeyStats?</span> <span style="color:#a31515">&#34;)&#34;</span> tbEnd:<span style="color:#2b91af">TableEnd</span> <span style="color:#a31515">&#34;;&#34;</span> _ {
+    <span style="color:#00f">return</span> {tableName: <span style="color:#2b91af">tbName</span>, cols: <span style="color:#2b91af">cols</span>, keys: <span style="color:#2b91af">keys</span>, comment: <span style="color:#2b91af">tbEnd.comment</span>}
+}
+  
+
+ColDef 
+  = _ colName:<span style="color:#2b91af">field</span> _ type:<span style="color:#2b91af">type</span> typeModify? _ colsModify comment:<span style="color:#2b91af">comment?</span> <span style="color:#a31515">&#34;,&#34;</span>? _ {
+  <span style="color:#00f">return</span> {colName: <span style="color:#2b91af">colName</span>, type:<span style="color:#2b91af">type</span>, comment: <span style="color:#2b91af">comment</span> || <span style="color:#a31515">&#34;&#34;</span>}
+}
+
+</code></pre></div><blockquote>
+<p><a href="https://raw.githubusercontent.com/zhenhuaa/sql2ts/master/src/lib/sql2ts.pegjs">完整规则可见</a></p>
+</blockquote>
+<h4 id="sql规则的解释">SQL规则的解释</h4>
+<p>这次我们利用PEGJS生成parser对识别后，直接返回一个AST来存储解析的结果, 对于create table语句的解析，最终我们会返回如下一个结构。</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">TABLE_DEF
+= {tableName: <span style="color:#a31515">&#34;profile&#34;</span>, cols: COLS, keys: KEYS, comment: <span style="color:#a31515">&#34;user profile&#34;</span>}
+
+COLS =  [
+      {
+          <span style="color:#a31515">&#34;colName&#34;</span>: <span style="color:#a31515">&#34;roleId&#34;</span>,
+          <span style="color:#a31515">&#34;type&#34;</span>: <span style="color:#a31515">&#34;bigint&#34;</span>,
+          <span style="color:#a31515">&#34;comment&#34;</span>: <span style="color:#a31515">&#34;playerId&#34;</span>
+      }
+]
+</code></pre></div><h4 id="遍历ast来生成">遍历AST来生成</h4>
+<p>有了AST结构，最终生成interface就非常简单, 我们只要遍历ast结构, 对于列中不同的COL的类型做一次映射，转换成ts支持的类型即可, 比如bigint转换成number， varcahr转换成string等等</p>
+<h3 id="制作成web工具">制作成web工具</h3>
+<p>由于PEGJS生产的parser是纯js，我们可以很方便的制作成web版工具，运行在浏览器中,
+<img src="https://i.loli.net/2020/12/28/Ag8lC2Y3ZIPzJRx.png" alt="image.png">
+我们用REACT技术栈左右设置各放置一个aceEditor组件， 然后自动监听坐标组件文本变化，来生成右边内容即可,制作完成后的的 <a href="https://zhenhuaa.github.io/sql2ts/">在线工具地址</a></p>
+<h3 id="补充">补充</h3>
+<p>其实如果不考虑制作成web工具的话，我们其实可以其实查询db schema信息来生成, 很多类似工具都用的这种方法</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li>[1] <a href="https://en.wikipedia.org/wiki/Parsing_expression_grammar">PEG文法</a></li>
+<li>[2] <a href="https://pegjs.org/documentation">PEG.JS官方文档</a></li>
+<li>[3] <a href="https://zh.wikipedia.org/wiki/%E6%8A%BD%E8%B1%A1%E8%AA%9E%E6%B3%95%E6%A8%B9">AST抽象语法树</a></li>
+</ul>
+
+			</div>
+
+			<div class="tags">
+				
+					
+						<ul class="flat">
+							
+							<li><a href="/tags/peg.js">PEG.JS</a></li>
+							
+						</ul>
+					
+				
+			</div><div id="disqus_thread"></div>
+<script type="text/javascript">
+	(function () {
+		
+		
+		if (window.location.hostname == "localhost")
+			return;
+
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		var disqus_shortname = 'dequeue-blog';
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the </a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div>2020  © Copyright notice |  <a href="https://github.com/knadh/hugo-ink">Ink</a> theme on <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-123-45', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<script>feather.replace()</script>
+</body>
+</html>
