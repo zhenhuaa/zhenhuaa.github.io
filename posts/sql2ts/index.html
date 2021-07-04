@@ -4,19 +4,16 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>利用PEG.JS从SQL生成模型类型签名 - Pacman&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta itemprop="name" content="利用PEG.JS从SQL生成模型类型签名">
-<meta itemprop="description" content="介绍利用PEG.JS从SQL建表语句解析后生成类型签名的方法">
-<meta itemprop="datePublished" content="2020-12-28T00:00:00&#43;00:00" />
+<meta itemprop="description" content="介绍利用PEG.JS从SQL建表语句解析后生成类型签名的方法"><meta itemprop="datePublished" content="2020-12-28T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2020-12-28T00:00:00&#43;00:00" />
 <meta itemprop="wordCount" content="342">
-
-
-
 <meta itemprop="keywords" content="PEG.JS," /><meta property="og:title" content="利用PEG.JS从SQL生成模型类型签名" />
 <meta property="og:description" content="介绍利用PEG.JS从SQL建表语句解析后生成类型签名的方法" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://zhenhuaa.github.io/posts/sql2ts/" />
-<meta property="article:published_time" content="2020-12-28T00:00:00+00:00" />
-<meta property="article:modified_time" content="2020-12-28T00:00:00+00:00" />
+<meta property="og:url" content="https://zhenhuaa.github.io/posts/sql2ts/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-12-28T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2020-12-28T00:00:00&#43;00:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="利用PEG.JS从SQL生成模型类型签名"/>
 <meta name="twitter:description" content="介绍利用PEG.JS从SQL建表语句解析后生成类型签名的方法"/>
@@ -167,8 +164,8 @@ TableDef
   
 
 ColDef 
-  = _ colName:<span style="color:#2b91af">field</span> _ type:<span style="color:#2b91af">type</span> typeModify? _ colsModify comment:<span style="color:#2b91af">comment?</span> <span style="color:#a31515">&#34;,&#34;</span>? _ {
-  <span style="color:#00f">return</span> {colName: <span style="color:#2b91af">colName</span>, type:<span style="color:#2b91af">type</span>, comment: <span style="color:#2b91af">comment</span> || <span style="color:#a31515">&#34;&#34;</span>}
+  = _ colName:<span style="color:#2b91af">field</span> _ <span style="color:#00f">type</span>:<span style="color:#00f">type</span> typeModify? _ colsModify comment:<span style="color:#2b91af">comment?</span> <span style="color:#a31515">&#34;,&#34;</span>? _ {
+  <span style="color:#00f">return</span> {colName: <span style="color:#2b91af">colName</span>, <span style="color:#00f">type</span>:<span style="color:#00f">type</span>, comment: <span style="color:#2b91af">comment</span> || <span style="color:#a31515">&#34;&#34;</span>}
 }
 
 </code></pre></div><blockquote>

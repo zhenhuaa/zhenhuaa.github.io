@@ -7,10 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Copyright notice</copyright>
-    <lastBuildDate>Sat, 04 Jul 2020 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://zhenhuaa.github.io/tags/openapi/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Sun, 04 Jul 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://zhenhuaa.github.io/tags/openapi/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>基于OpenAPI的测试代码生成</title>
+      <link>https://zhenhuaa.github.io/posts/api-test-gen/</link>
+      <pubDate>Sun, 04 Jul 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://zhenhuaa.github.io/posts/api-test-gen/</guid>
+      <description>背景介绍 OpenAPI1是一种用于描述REST接口,和语言无关的接口定义规范，可用于文档生成, 生成不同语言客户端等多种用途, 本文主要阐述利用OpenApi的接口规范来自动生成基于SuperTest2 的接口测试代码
+OpenAPI概览 接口定义 /news/list get: tags: - news summary: 新闻列表 parameters: - $ref: &amp;#34;#/components/parameters/userIdOptional&amp;#34; - $ref: &amp;#34;#/components/parameters/searchKw&amp;#34; - $ref: &amp;#34;#/components/parameters/page&amp;#34; - $ref: &amp;#34;#/components/parameters/pageSize&amp;#34; responses: &amp;#34;200&amp;#34;: $ref: &amp;#34;#/components/responses/NewListRes&amp;#34; 该代码片段用OpenAPI描述了一个新闻列表接口, 接口路径为/news/list, 有四个参数, 返回为NewList结构的接口, 注意$ref语法， 为了复用参数和返回的结构定义, OpenAPI规范允许我们使用$ref语法引用在compoents模块里定义的组件定义
+引用的参数和返回结构 参数片段 userIdOptional: name: userId in: query required: false description: 用户id schema: type: number example: 10 接下来我们看下参数的引用定义, 参数这里最重要的参数名字也就是name以及schema, name表示了参数的字段名，schema规范了参数的shape, 其他参数类似
+返回结构 NewListRes: description: OK content: application/json: schema: type: object properties: code: type: number example: 0 data: type: object properties: list: type: array description: 新闻列表 items: $ref: &amp;#34;#/components/schemas/NewsItem&amp;#34; 返回结构例子如图，由此可知， 该返回为json结构，有code和data两个字段， data是个对象，对象里的list引用了一个NewsItem的schema结构</description>
+    </item>
     
     <item>
       <title>Swagger简易指南</title>

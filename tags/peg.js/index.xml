@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© Copyright notice</copyright>
-    <lastBuildDate>Mon, 28 Dec 2020 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://zhenhuaa.github.io/tags/peg.js/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 28 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://zhenhuaa.github.io/tags/peg.js/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>利用PEG.JS从SQL生成模型类型签名</title>
       <link>https://zhenhuaa.github.io/posts/sql2ts/</link>
